@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitBox | Find My Device</title>
+    <script>
+        function route() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            const pkg = "com.maps.locator.gpstracker.gps.phone.tracker";
+
+            // 1. Play Store Fallback
+            let storeUrl = "https://play.google.com/store/apps/details?id=" + pkg;
+            if (code) storeUrl += "&referrer=utm_content%3D" + encodeURIComponent(code);
+
+            // 2. Android Intent
+            // Note: 'findmydevice' is the host for the intent
+            const intentUrl = "intent://findmydevice" + (code ? "?code=" + code : "") + 
+                             "#Intent;scheme=https;package=" + pkg + 
+                             ";S.browser_fallback_url=" + encodeURIComponent(storeUrl) + ";end";
+
+            window.location.href = intentUrl;
+        }
+    </script>
+    <style>
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #fafafa; }
+        .box { text-align: center; border: 1px solid #eee; padding: 40px; border-radius: 15px; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+    </style>
+</head>
+<body onload="route()">
+    <div class="box">
+        <h2>BitBox</h2>
+        <p>Connecting to Find My Device...</p>
+    </div>
+</body>
+</html>
