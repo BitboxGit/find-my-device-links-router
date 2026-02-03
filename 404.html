@@ -1,127 +1,82 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     
-
     <title>Find My Device & Anti-Theft</title>
-
     <meta name="description" content="Secure your phone with Anti-Theft alerts, GPS tracking, and intruder selfies.">
-
     
-
     <meta property="og:type" content="website">
-
     <meta property="og:url" content="https://findmydevice.gpsfamilylocator.com/">
-
     <meta property="og:title" content="Find My Device - Secure & Track">
-
     <meta property="og:description" content="I'm sharing my live location with you. Click to view on Find My Device.">
-
     <meta property="og:image" content="https://play-lh.googleusercontent.com/UMZE-NBVfRozMtN0LazaUJkE0Uzwwv7a25pb-slPuEqpLmi0vBb9CtXMQV2CWLes1A=s48-rw">
-
     <meta property="twitter:image" content="https://play-lh.googleusercontent.com/UMZE-NBVfRozMtN0LazaUJkE0Uzwwv7a25pb-slPuEqpLmi0vBb9CtXMQV2CWLes1A=s48-rw">
-
     <meta property="og:image:width" content="512">
-
     <meta property="og:image:height" content="512">
 
-
-
     <style>
-
         body { 
-
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-
             display: flex; 
-
             align-items: center; 
-
             justify-content: center; 
-
             height: 100vh; 
-
             margin: 0; 
-
             background: #f4f7f6; 
-
             color: #333; 
-
         }
-
         .box { 
-
             text-align: center; 
-
             padding: 40px; 
-
             border-radius: 20px; 
-
             background: white; 
-
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-
             max-width: 320px; 
-
             width: 90%;
-
         }
-
         .spinner { 
-
             border: 3px solid #f3f3f3; 
-
             border-top: 3px solid #3498db; 
-
             border-radius: 50%; 
-
             width: 30px; 
-
             height: 30px; 
-
             animation: spin 1s linear infinite; 
-
             margin: 20px auto; 
-
         }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
         h2 { margin: 0; color: #2c3e50; font-size: 22px; }
-
         p { font-size: 14px; color: #7f8c8d; line-height: 1.5; margin-top: 15px; }
-
     </style>
-
-
 
     <script>
     function route() {
         const url = new URL(window.location.href);
         const params = new URLSearchParams(window.location.search);
+        
         const code = params.get('code');
+        const lat = params.get('lat');
+        const lng = params.get('lng');
         
-        // This is the magic part: it grabs whatever is left (?code=...&lat=...&lng=...)
-        // If 'tok' is missing from the link, it simply won't be included here.
         const allQuery = window.location.search; 
-        
         const path = url.pathname; 
         const pkg = "com.maps.locator.gpstracker.gps.phone.tracker";
 
-        // 1. Play Store Referrer
+        // 1. Play Store Referrer Construction
         let storeUrl = "https://play.google.com/store/apps/details?id=" + pkg;
+        
         if (code) {
-            storeUrl += "&referrer=" + encodeURIComponent(code);
+            // Create a bundled referrer string: code=ABC&lat=123&lng=456
+            let referrerString = "code=" + code;
+            if (lat) referrerString += "&lat=" + lat;
+            if (lng) referrerString += "&lng=" + lng;
+            
+            // Encode the whole bundle so Play Store can read it as one 'referrer' parameter
+            storeUrl += "&referrer=" + encodeURIComponent(referrerString);
         }
 
-        // 2. Android Intent
+        // 2. Android Intent Construction
         let intentPath = (path === "/" || path === "" || path.includes("index.html")) ? "/join" : path;
         let queryPart = allQuery ? allQuery : "";
 
@@ -135,27 +90,15 @@
         }, 800);
     }
 </script>
-
 </head>
-
 <body onload="route()">
-
     <div class="box">
-
         <h2>Find My Device</h2>
-
         <div class="spinner"></div>
-
         <p>Connecting to Find My Device...<br>Please wait a moment.</p>
-
         <noscript>
-
             <p style="color:red;">Please enable JavaScript to open the app.</p>
-
         </noscript>
-
     </div>
-
 </body>
-
 </html>
