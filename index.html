@@ -22,9 +22,7 @@
 
     <meta property="og:title" content="Find My Device - Secure & Track">
 
-    <meta property="og:description" content="Join my group or track my device. Download Find My Device for total phone security!">
-
-    
+    <meta property="og:description" content="I'm sharing my live location with you. Click to view on Find My Device.">
 
     <meta property="og:image" content="https://play-lh.googleusercontent.com/UMZE-NBVfRozMtN0LazaUJkE0Uzwwv7a25pb-slPuEqpLmi0vBb9CtXMQV2CWLes1A=s48-rw">
 
@@ -105,72 +103,38 @@
 
 
     <script>
+    function route() {
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('code');
+        
+        // This is the magic part: it grabs whatever is left (?code=...&lat=...&lng=...)
+        // If 'tok' is missing from the link, it simply won't be included here.
+        const allQuery = window.location.search; 
+        
+        const path = url.pathname; 
+        const pkg = "com.maps.locator.gpstracker.gps.phone.tracker";
 
-        function route() {
-
-            const url = new URL(window.location.href);
-
-            const params = new URLSearchParams(window.location.search);
-
-            const code = params.get('code');
-
-            const allQuery = window.location.search; // Example: "?code=123&lat=30"
-
-            const path = url.pathname; 
-
-            const pkg = "com.maps.locator.gpstracker.gps.phone.tracker";
-
-
-
-            // 1. CONSTRUCT PLAY STORE URL (Fallback/Referrer)
-
-            let storeUrl = "https://play.google.com/store/apps/details?id=" + pkg;
-
-            if (code) {
-
-                // Pass ONLY the 6-digit code to the referrer for reliability
-
-                storeUrl += "&referrer=" + encodeURIComponent(code);
-
-            }
-
-
-
-            // 2. CONSTRUCT ANDROID INTENT
-
-            // If no path is found (root), default to /join.
-
-            let intentPath = (path === "/" || path === "" || path.includes("index.html")) ? "/join" : path;
-
-            
-
-            // Clean Query Logic: only add it if it exists
-
-            let queryPart = allQuery ? allQuery : "";
-
-
-
-            let intentUrl = "intent://findmydevice.gpsfamilylocator.com" + intentPath + queryPart + 
-
-                            "#Intent;scheme=https;package=" + pkg + 
-
-                            ";S.browser_fallback_url=" + encodeURIComponent(storeUrl) + ";end";
-
-
-
-            // 3. AUTO-REDIRECT
-
-            // 800ms delay gives the UI a chance to show "Connecting..."
-
-            setTimeout(() => {
-
-                window.location.href = intentUrl;
-
-            }, 800);
-
+        // 1. Play Store Referrer
+        let storeUrl = "https://play.google.com/store/apps/details?id=" + pkg;
+        if (code) {
+            storeUrl += "&referrer=" + encodeURIComponent(code);
         }
 
-    </script>
+        // 2. Android Intent
+        let intentPath = (path === "/" || path === "" || path.includes("index.html")) ? "/join" : path;
+        let queryPart = allQuery ? allQuery : "";
+
+        let intentUrl = "intent://findmydevice.gpsfamilylocator.com" + intentPath + queryPart + 
+                        "#Intent;scheme=https;package=" + pkg + 
+                        ";S.browser_fallback_url=" + encodeURIComponent(storeUrl) + ";end";
+
+        // 3. Redirect
+        setTimeout(() => {
+            window.location.href = intentUrl;
+        }, 800);
+    }
+</script>
 
 </head>
 
