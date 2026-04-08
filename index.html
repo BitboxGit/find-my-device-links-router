@@ -37,6 +37,11 @@
             if (lat) referrerParts.push("lat=" + lat);
             if (lng) referrerParts.push("lng=" + lng);
             if (name) referrerParts.push("name=" + encodeURIComponent(name));
+
+            // --- TRACKING PARAMETERS ---
+            referrerParts.push("utm_source=app_invite");
+            referrerParts.push("utm_medium=share_link");
+            referrerParts.push("utm_campaign=friend_join");
             
             // Joins them into: code=XYZ&lat=00&lng=00&name=DeviceName
             const referrerString = referrerParts.join('&');
